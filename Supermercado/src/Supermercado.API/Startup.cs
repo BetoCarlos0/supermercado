@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Supermercado.Infrastructure.Data.DataRegistration;
 using System;
 using System.Collections;
+using System.Reflection;
 
 namespace Supermercado.API
 {
@@ -26,7 +28,8 @@ namespace Supermercado.API
         {
             services.AddControllers().AddNewtonsoftJson(opt =>
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
+            //services.AddControllers();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddDataRegistration(_configuration);
 
             services.AddSwaggerGen(c =>
@@ -65,7 +68,7 @@ namespace Supermercado.API
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Supermercado API");
-                //c.RoutePrefix = string.Empty;
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseEndpoints(endpoints =>

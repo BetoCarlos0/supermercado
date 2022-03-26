@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.4.0" />
     <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.15">
       <PrivateAssets>all</PrivateAssets>
@@ -20,10 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Categoria\Validation\" />
-    <Folder Include="Application\Categoria\Command\" />
     <Folder Include="Application\Estoque\" />
-    <Folder Include="Application\Produto\" />
   </ItemGroup>
 
 </Project>

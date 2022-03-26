@@ -1,5 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Supermercado.API.Application.Categoria.Command;
+using Supermercado.API.Application.Categoria.Query;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Supermercado.API.Controllers
@@ -9,10 +14,60 @@ namespace Supermercado.API.Controllers
     public class CategoriaController : Controller
     {
         private readonly IMediator _mediator;
-        [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+
+        public CategoriaController(IMediator mediator)
         {
-            return Ok("ok");
+            _mediator = mediator;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllCategories(CancellationToken cancellationToken)
+        {
+            var categorias = await _mediator.Send(new GetAllCategoriesQuery(), cancellationToken)
+                .ConfigureAwait(false);
+
+            return categorias.Any() ? Ok(categorias) : NotFound();
+        }
+        
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create(CreateCategoryCommand createCategoryCommand,
+            CancellationToken cancellationToken)
+        {
+            if (!createCategoryCommand.Validation.IsValid)
+                return BadRequest(createCategoryCommand.Validation.Errors);
+
+            var sucesso = await _mediator.Send(createCategoryCommand, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Ok(sucesso);
+        }
+        
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(UpdateCategoryCommand updateCategoryCommand,
+            CancellationToken cancellationToken)
+        {
+            var sucesso = await _mediator.Send(updateCategoryCommand, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Ok(sucesso);
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(DeleteCategoryCommand deleteCategoryCommand,
+            CancellationToken cancellationToken)
+        {
+            var sucesso = await _mediator.Send(deleteCategoryCommand, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Ok(sucesso);
         }
     }
 }
